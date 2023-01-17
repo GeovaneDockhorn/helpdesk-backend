@@ -41,6 +41,12 @@ public class ChamadoService {
 		return chamadoRepository.save(newChamado(chamadoDTO));
 	}
 	
+	public Chamado update(Integer id, @Valid ChamadoDTO chamadoDTO) {
+		findById(id);
+		chamadoDTO.setId(id);
+		return chamadoRepository.save(newChamado(chamadoDTO));
+	}
+	
 	private Chamado newChamado(ChamadoDTO chamadoDTO) {
 		Tecnico tecnico = tecnicoService.findById(chamadoDTO.getTecnico());
 		Cliente cliente = clienteService.findById(chamadoDTO.getCliente());
@@ -49,6 +55,11 @@ public class ChamadoService {
 		if(chamadoDTO.getId() != null) {
 			chamado.setId(chamadoDTO.getId());
 		}
+		
+		if(chamadoDTO.getStatus().equals(2)) {
+			chamado.setDataFechamento(LocalDate.now());
+		}
+		
 		chamado.setTecnico(tecnico);
 		chamado.setCliente(cliente);
 		chamado.setPrioridade(Prioridade.toEnum(chamadoDTO.getPrioridade()));
@@ -57,5 +68,7 @@ public class ChamadoService {
 		chamado.setObservacoes(chamadoDTO.getObservacoes());
 		return chamado;
 	}
+
+
 	
 }
